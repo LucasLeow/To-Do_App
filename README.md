@@ -2,5 +2,8 @@
 Full stack To-do app
 
 
-Python Backend : FastAPI with JWT Authentication
+Frontend: Bootstrap CSS
+Backend : Python FastAPI with JWT Authentication
+DB: MySQL
+
 
