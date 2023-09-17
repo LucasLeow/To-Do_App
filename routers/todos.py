@@ -8,12 +8,14 @@ from fastapi import APIRouter, Depends, Path, HTTPException
 from starlette import status
 
 sys.path.append('../FullStackToDoApp')
-from FullStackToDoApp.models import *
-from FullStackToDoApp.database import engine, SessionLocal
+from persistence.models import *
+from persistence.database import SessionLocal
 
 from .auth import get_current_user
 
-router = APIRouter()
+router = APIRouter(
+    tags=['todos endpoints']
+)
 
 def get_db():
     db = SessionLocal()
