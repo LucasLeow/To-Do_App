@@ -4,7 +4,10 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from fastapi import APIRouter, Depends, Path, HTTPException
+from fastapi import APIRouter, Depends, Path, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
 from starlette import status
 
 sys.path.append('../FullStackToDoApp')
@@ -17,6 +20,7 @@ router = APIRouter(
     tags=['todos endpoints']
 )
 
+templates = Jinja2Templates(directory='templates')
 def get_db():
     db = SessionLocal()
     try:
@@ -35,6 +39,10 @@ class TodoRequest(BaseModel):
     priority: int = Field(gt=0, lt=6)
     complete: bool
     # owner_id provided by JWT
+
+@router.get("/test")
+async def test(request: Request):
+    return templates.TemplateResponse('home.html', {'request': request})
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def get_all_todos(user: user_dependency, db: db_dependency):
