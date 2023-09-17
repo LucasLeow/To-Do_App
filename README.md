@@ -2,7 +2,7 @@
 Full stack To-do app
 
 
-Frontend: Bootstrap CSS
+Frontend: Bootstrap CSS/JS, JQuery, PopperJS
 
 
 Backend : Python FastAPI with JWT Authentication
