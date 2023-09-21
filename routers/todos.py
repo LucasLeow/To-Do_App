@@ -30,9 +30,12 @@ def get_db():
     finally:
         db.close()
 
+db_dependency = Annotated[Session, Depends(get_db)]
+
 @router.get("/", response_class=HTMLResponse)
-async def read_all_todo_by_user(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request})
+async def read_all_todo_by_user(request: Request, db: db_dependency):
+    todos = db.query(Todos).filter(Todos.owner_id == 1).all()
+    return templates.TemplateResponse("home.html", {"request": request, 'todos': todos})
 
 @router.get("/add-todo", response_class=HTMLResponse)
 async def add_new_todo(request: Request):
