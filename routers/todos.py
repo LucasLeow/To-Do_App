@@ -17,6 +17,7 @@ from persistence.database import SessionLocal
 from .auth import get_current_user
 
 router = APIRouter(
+    prefix='/todos',
     tags=['todos endpoints']
 )
 
@@ -28,7 +29,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 @router.get("/", response_class=HTMLResponse)
 async def read_all_todo_by_user(request: Request):
