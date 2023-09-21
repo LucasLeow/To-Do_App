@@ -59,7 +59,8 @@ async def create_todo( db: db_dependency, request: Request, title: str = Form(..
     return RedirectResponse(url='/todos', status_code=status.HTTP_302_FOUND)
 
 
-
 @router.get("/edit-todo/{todo_id}", response_class=HTMLResponse)
-async def edit_todo(request: Request):
-    return templates.TemplateResponse("edit-todo.html", {'request': request})
+async def edit_todo(request: Request, db: db_dependency, todo_id: int):
+    todo = db.query(Todos).filter(Todos.id == todo_id).first()
+
+    return templates.TemplateResponse("edit-todo.html", {'request': request, 'todo': todo})
