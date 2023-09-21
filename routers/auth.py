@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from starlette import status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -13,14 +13,15 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
 
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory='templates')
+
 router = APIRouter(
     prefix='/auth',
     tags=['auth endpoints']
 )
-
-@router.get('/')
-async def get_user():
-    return {'user': 'authenticated'}
 
 SECRET_KEY = "76914b3e3a0bafeb34b3024f0f014bb85b5755127f22d6e5e9a7a05f45f5eb84"
 ALGO = 'HS256'
@@ -49,6 +50,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 def authenticate_user(username: str, password: str, db):
     user = db.query(models.Users).filter(models.Users.username == username).first()
@@ -106,6 +108,14 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
 
     db.add(create_user_model)
     db.commit()
+
+@router.get("/", response_class=HTMLResponse)
+async def login_authentication(request: Request):
+    return templates.TemplateResponse("login.html", {'request': request})
+
+@router.get("/register", response_class=HTMLResponse)
+async def login_authentication(request: Request):
+    return templates.TemplateResponse("register.html", {'request': request})
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
