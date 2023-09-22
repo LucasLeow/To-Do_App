@@ -1,6 +1,6 @@
 <div> <!-- Navbar div -->
     <nav class="navbar navbar-expand-md navbar-dark main-color fixed-top">
-        <a class="navbar-brand" href="#">To-do App</a>
+        <a class="navbar-brand" href="/">To-do App</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -10,7 +10,7 @@
             <ul class="navbar-nav">
                 {% if user %}
                 <li class="nav-item active">
-                    <a href="/" class="nav-link" >Home</a>
+                    <a href="/" class="nav-link font-weight-bold rounded bg-dark" >Home</a>
                 </li>
                 {% endif %}
             </ul>
@@ -18,7 +18,10 @@
             <ul class="navbar-nav ml-auto">
                 {% if user %}
                 <li class="nav-item m-1">
-                    <a type="button" class="btn btn-outline-light btn-danger " href="/auth/logout">Logout</a>
+                    <a type="button" class="btn btn-warning text-dark font-weight-bold" href="/users/edit-password">Change Password</a>
+                </li>
+                <li class="nav-item m-1">
+                    <a type="button" class="btn btn-danger font-weight-bold" href="/auth/logout">Logout</a>
                 </li>
                 {% endif %}
             </ul>

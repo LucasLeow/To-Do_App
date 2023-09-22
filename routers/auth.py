@@ -96,8 +96,9 @@ async def get_current_user(request: Request):
         if username is None or user_id is None:
             logout(request)
         return {'username': username, 'id': user_id}
+
     except JWTError:
-        raise HTTPException(status_code=404, detailts='Not Found')
+        raise HTTPException(status_code=404, detail='Not Found')
 
 
 @router.post('/token')
