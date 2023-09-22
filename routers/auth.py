@@ -91,13 +91,17 @@ def create_access_token(username: str, user_id: int,
     encode.update({"exp": expire})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGO)
 
-async def get_current_user(token: str = Depends(oauth2_bearer)):
+async def get_current_user(request: Request):
     try:
+        token = request.cookies.get('access_token')
+        if token is None:
+            return None
+
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGO])
         username: str = payload.get('username')
         user_id: int = payload.get('id')
         if username is None or user_id is None:
-            raise get_user_exception()
+            return None
         return {'username': username, 'id': user_id}
     except JWTError:
         raise get_user_exception()
