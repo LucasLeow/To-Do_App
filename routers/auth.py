@@ -1,6 +1,6 @@
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, Form
 from fastapi.templating import Jinja2Templates
 
 from starlette.responses import HTMLResponse, RedirectResponse
@@ -171,6 +171,39 @@ async def logout(request: Request):
 async def register(request:  Request):
     return templates.TemplateResponse('register.html', {'request': request})
 
+@router.post('/register', response_class=HTMLResponse)
+async def register_user(db: db_dependency, request: Request,
+                        email: str = Form(...),
+                        username: str = Form(...),
+                        firstname: str = Form(...),
+                        lastname: str = Form(...),
+                        password: str = Form(...),
+                        password2: str = Form(...),
+                        ):
+
+    username_already_exist = db.query(models.Users).filter(models.Users.username == username).first()
+    email_already_exist = db.query(models.Users).filter(models.Users.email == email).first()
+
+    if password != password2 or username_already_exist is not None or email_already_exist is not None:
+        msg = "invalid registration request"
+        return templates.TemplateResponse('register.html', {'request': request, 'msg': msg})
+
+    user_model = models.Users()
+    user_model.username = username
+    user_model.email = email
+    user_model.first_name = firstname
+    user_model.last_name = lastname
+
+    hash_password = get_password_hash(password)
+    user_model.hashed_password = hash_password
+
+    user_model.is_active = True
+
+    db.add(user_model)
+    db.commit()
+
+    msg = 'user successfully created'
+    return templates.TemplateResponse('login.html', {'request': request, 'msg': msg})
 
 def get_user_exception():
     credentials_exception = HTTPException(
