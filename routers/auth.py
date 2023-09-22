@@ -160,6 +160,13 @@ async def login(request: Request, db: db_dependency):
         msg = 'unknown error'
         return templates.TemplateResponse('login.html', {'request':request,'msg': msg})
 
+@router.get('/logout')
+async def logout(request: Request):
+    msg = "logout successful"
+    response = templates.TemplateResponse('login.html', {'request': request, 'msg': msg})
+    response.delete_cookie(key='access_token')
+    return response
+
 @router.get('/register', response_class=HTMLResponse)
 async def register(request:  Request):
     return templates.TemplateResponse('register.html', {'request': request})

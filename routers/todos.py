@@ -41,7 +41,7 @@ async def read_all_todo_by_user(request: Request, db: db_dependency):
         return RedirectResponse(url='/auth', status_code=status.HTTP_302_FOUND)
 
     todos = db.query(Todos).filter(Todos.owner_id == user.get('id')).all()
-    return templates.TemplateResponse("home.html", {"request": request, 'todos': todos})
+    return templates.TemplateResponse("home.html", {"request": request, 'todos': todos, 'user': user})
 
 @router.get("/add-todo", response_class=HTMLResponse)
 async def add_new_todo(request: Request):
@@ -49,7 +49,7 @@ async def add_new_todo(request: Request):
     if user is None:
         return RedirectResponse(url='/auth', status_code=status.HTTP_302_FOUND)
 
-    return templates.TemplateResponse("add-todo.html", {'request': request})
+    return templates.TemplateResponse("add-todo.html", {'request': request, 'user': user})
 
 # path must be same name as html name for form (add-todo.html)
 @router.post("/add-todo", response_class=HTMLResponse)
@@ -81,7 +81,7 @@ async def edit_todo(request: Request, db: db_dependency, todo_id: int):
 
     todo = db.query(Todos).filter(Todos.id == todo_id).first()
 
-    return templates.TemplateResponse("edit-todo.html", {'request': request, 'todo': todo})
+    return templates.TemplateResponse("edit-todo.html", {'request': request, 'todo': todo, 'user': user})
 
 
 @router.post('/edit-todo/{todo_id}', response_class=HTMLResponse)
